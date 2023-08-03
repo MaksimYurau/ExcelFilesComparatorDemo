@@ -27,19 +27,33 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelFileComparator extends Application {
+
     private static final String title = "File Comparator";
+
     private static final String firstFileLabelText = "Укажите путь к старому файлу:";
+
     private static final String secondFileLabelText = "Укажите путь к новому файлу:";
+
     private static final String outputFileLabelText = "Укажите путь к файлу сравнения";
+
     private static final String compareButtonText = "Сравнить";
+
     private static final String successfulOperationMessage = "Сравнение завершено. Результаты сохранены в файле: ";
+
     private static final String oldFile = "Старый файл: ";
+
     private static final String newFile = "Новый файл: ";
+
     private static final String comparisonFile = "Файл сравнения: ";
+
     private static final String outputWorkBookSheet1Name = "Удалено";
+
     private static final String outputWorkBookSheet2Name = "Обновлено";
+
     private static final String outputWorkBookSheet3Name = "Добавлено";
+
     private static final String simpleDateFormatPattern = "dd.MM.yyyy";
+
     public static void main(String[] args) {
         launch(args);
     }
