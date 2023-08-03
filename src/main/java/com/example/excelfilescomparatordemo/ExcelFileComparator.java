@@ -27,6 +27,19 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelFileComparator extends Application {
+    private static final String title = "File Comparator";
+    private static final String firstFileLabelText = "Укажите путь к старому файлу:";
+    private static final String secondFileLabelText = "Укажите путь к новому файлу:";
+    private static final String outputFileLabelText = "Укажите путь к файлу сравнения";
+    private static final String compareButtonText = "Сравнить";
+    private static final String successfulOperationMessage = "Сравнение завершено. Результаты сохранены в файле: ";
+    private static final String oldFile = "Старый файл: ";
+    private static final String newFile = "Новый файл: ";
+    private static final String comparisonFile = "Файл сравнения: ";
+    private static final String outputWorkBookSheet1Name = "Удалено";
+    private static final String outputWorkBookSheet2Name = "Обновлено";
+    private static final String outputWorkBookSheet3Name = "Добавлено";
+    private static final String simpleDateFormatPattern = "dd.MM.yyyy";
     public static void main(String[] args) {
         launch(args);
     }
@@ -34,22 +47,22 @@ public class ExcelFileComparator extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        primaryStage.setTitle("File Comparator");
+        primaryStage.setTitle(title);
 
         // Создание элементов интерфейса
-        Label firstFileLabel = new Label("Укажите путь к старому файлу:");
+        Label firstFileLabel = new Label(firstFileLabelText);
         firstFileLabel.setTextAlignment(TextAlignment.RIGHT);
         TextField firstFileTextField = new TextField();
 
-        Label secondFileLabel = new Label("Укажите путь к новому файлу:");
+        Label secondFileLabel = new Label(secondFileLabelText);
         secondFileLabel.setTextAlignment(TextAlignment.RIGHT);
         TextField secondFileTextField = new TextField();
 
-        Label outputFileLabel = new Label("Укажите путь к файлу сравнения");
+        Label outputFileLabel = new Label(outputFileLabelText);
         outputFileLabel.setTextAlignment(TextAlignment.RIGHT);
         TextField outputTextField = new TextField();
 
-        Button compareButton = new Button("Сравнить");
+        Button compareButton = new Button(compareButtonText);
 
         // Создание компоновки HBox для каждой пары Label и TextField
         HBox firstFileBox = new HBox(10);
@@ -93,15 +106,15 @@ public class ExcelFileComparator extends Application {
                 compareAndGenerateReport(firstWorkBook, secondWorkbook, outputWorkbook);
 
                 outputWorkbook.write(outputFile);
-                System.out.println("Сравнение завершено. Результаты сохранены в файле: " + outputFilePath);
+                System.out.println(successfulOperationMessage + outputFilePath);
             } catch (IOException exception) {
                 throw new RuntimeException(exception);
             }
 
             // Пример вывода результата в консоль
-            System.out.println("Старый файл: " + firstFilePath);
-            System.out.println("Новый файл: " + secondFilePath);
-            System.out.println("Файл сравнения: " + outputFilePath);
+            System.out.println(oldFile + firstFilePath);
+            System.out.println(newFile + secondFilePath);
+            System.out.println(comparisonFile + outputFilePath);
         });
 
         Scene scene = new Scene(vbox);
@@ -119,17 +132,17 @@ public class ExcelFileComparator extends Application {
         List<CellData> updatedRecords = new ArrayList<>();
         List<CellData> addedRecords = new ArrayList<>();
 
-        Sheet firstSheet = firstWorkBook.getSheetAt(0);
-        Sheet secondSheet = secondWorkbook.getSheetAt(0);
+        Sheet firstSheetOfTheFirstWorkbook = firstWorkBook.getSheetAt(0);
+        Sheet firstSheetOfTheSecondWorkbook = secondWorkbook.getSheetAt(0);
 
         // Проверка удалённых записей и обновлённых записей
-        int firstRows = firstSheet.getLastRowNum() + 1;
-        int secondRows = secondSheet.getLastRowNum() + 1;
+        int firstRows = firstSheetOfTheFirstWorkbook.getLastRowNum() + 1;
+        int secondRows = firstSheetOfTheSecondWorkbook.getLastRowNum() + 1;
         int maxRows = Math.max(firstRows, secondRows);
 
         for (int rowIndex = 0; rowIndex < maxRows; rowIndex++) {
-            Row firstRow = firstSheet.getRow(rowIndex);
-            Row secondRow = secondSheet.getRow(rowIndex);
+            Row firstRow = firstSheetOfTheFirstWorkbook.getRow(rowIndex);
+            Row secondRow = firstSheetOfTheSecondWorkbook.getRow(rowIndex);
 
             if (secondRow == null) {
                 // Ряд полностью удалён
@@ -187,9 +200,9 @@ public class ExcelFileComparator extends Application {
             }
         }
 
-        createReportSheet(outputWorkbook, "Удалено", deletedRecords);
-        createReportSheet(outputWorkbook, "Обновлено", updatedRecords);
-        createReportSheet(outputWorkbook, "Добавлено", addedRecords);
+        createReportSheet(outputWorkbook, outputWorkBookSheet1Name, deletedRecords);
+        createReportSheet(outputWorkbook, outputWorkBookSheet2Name, updatedRecords);
+        createReportSheet(outputWorkbook, outputWorkBookSheet3Name, addedRecords);
     }
 
     private static class CellData {
@@ -230,7 +243,7 @@ public class ExcelFileComparator extends Application {
             case NUMERIC:
                 if (DateUtil.isCellDateFormatted(cell)) {
                     Date dateValue = cell.getDateCellValue();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(simpleDateFormatPattern);
                     value = dateFormat.format(dateValue);
                 } else {
                     double numericValue = cell.getNumericCellValue();
