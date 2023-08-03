@@ -170,7 +170,7 @@ public class ExcelFileComparator extends Application {
                         rowUpdated = true;
                     } else if (!isCellEqual(firstCell, secondCell)) {
                         // Ячейка изменена
-                        CellData cellData = getCellData(firstCell);
+                        CellData cellData = getCellData(secondCell);
                         updatedRecords.add(cellData);
                         rowUpdated = true;
                     }
