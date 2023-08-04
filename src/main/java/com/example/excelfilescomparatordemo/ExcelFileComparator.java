@@ -128,7 +128,6 @@ public class ExcelFileComparator extends Application {
         primaryStage.show();
     }
 
-    // Старая рабочая версия метода
     private static void compareAndGenerateReport(Workbook firstWorkBook, Workbook secondWorkbook, Workbook outputWorkbook) {
         List<CellData> deletedRecords = new ArrayList<>();
         List<CellData> updatedRecords = new ArrayList<>();
@@ -231,7 +230,7 @@ public class ExcelFileComparator extends Application {
         }
     }
 
-    // В "Обновлено" будет показываться значение ячейки из первого (старого) файла (первоначальное).
+    // В "Обновлено" будет показываться значение ячейки из второго (нового) файла (первоначальное).
     private static CellData getCellData(Cell cell) {
         int rowIndex = cell.getRowIndex();
         int columnIndex = cell.getColumnIndex();
